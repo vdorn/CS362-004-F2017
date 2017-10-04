@@ -652,7 +652,7 @@ int getCost(int cardNumber)
 int smithyCard(int currentPlayer, struct gameState *state, int handPos){
 	int i;
 	//+3 Cards
-      for (i = 0; i < 3; i++)
+	for (i = 0; i < 3; i++)
 	{
 	  drawCard(currentPlayer, state);
 	}
@@ -686,7 +686,7 @@ int adventurerCard(int currentPlayer, struct gameState *state){
 		drawCard(currentPlayer, state);
 		
 		//top card of hand is most recently drawn card.
-		cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];
+		cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer] - 1];
 		
 		if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
 			drawntreasure++;
@@ -698,10 +698,13 @@ int adventurerCard(int currentPlayer, struct gameState *state){
 		}
 	}
 	
-	while(z-1>=0){
+	/*******************************************************************
+	** Bug: Changing while clause to loop until z - 1 > 0 instead of z - 1 >= 0
+	*******************************************************************/
+	while(z - 1 > 0){
 		// discard all cards in play that have been drawn
 		state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; 
-		z=z-1;
+		z = z - 1;
 	}
 	  
 	return 0;
@@ -719,8 +722,13 @@ int adventurerCard(int currentPlayer, struct gameState *state){
 int mineCard(int currentPlayer, struct gameState *state, int handPos, int choice1, int choice2, int choice3){
 	int i;
 	int j = state->hand[currentPlayer][choice1];  //store card we will trash
-
-	if (state->hand[currentPlayer][choice1] < copper || state->hand[currentPlayer][choice1] > gold){
+	
+	/*******************************************************************
+	** Bug: set hand choice1 to be either <= copper or >=gold instead of
+	** < copper or > gold to return 1 for there not being a possible choice
+	** for the mine card.
+	*******************************************************************/
+	if (state->hand[currentPlayer][choice1] <= copper || state->hand[currentPlayer][choice1] >= gold){
 		return -1;
 	}
 		
@@ -761,7 +769,10 @@ int villageCard(int currentPlayer, struct gameState *state, int handPos){
 	drawCard(currentPlayer, state);
 		
 	//+2 Actions
-	state->numActions = state->numActions + 2;
+	/*******************************************************************
+	** Bug: Adding 1 action to the players action count instead of 2
+	*******************************************************************/
+	state->numActions = state->numActions + 1;
 
 	//discard played card from hand
 	discardCard(handPos, currentPlayer, state, 0);
@@ -779,7 +790,10 @@ int villageCard(int currentPlayer, struct gameState *state, int handPos){
 int councilRoomCard(int currentPlayer, struct gameState *state, int handPos){
 	int i;
 	//+4 Cards
-	for (i = 0; i < 4; i++){
+	/*******************************************************************
+	** Bug: Initialized i to start at 1 instead of 0
+	*******************************************************************/
+	for (i = 1; i < 4; i++){
 		drawCard(currentPlayer, state);
 	}
 			
@@ -812,8 +826,8 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
   int tributeRevealedCards[2] = {-1, -1};
   int temphand[MAX_HAND];// moved above the if statement
   //int drawntreasure=0;
-  int cardDrawn;
-  int z = 0;// this is the counter for the temp hand
+  //int cardDrawn;
+  //int z = 0;// this is the counter for the temp hand
   if (nextPlayer > (state->numPlayers - 1)){
     nextPlayer = 0;
   }
