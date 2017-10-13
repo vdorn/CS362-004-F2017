@@ -13,18 +13,20 @@
 #include <stdio.h>
 #include <assert.h>
 #include "rngs.h"
+#include <time.h>
+#include <math.h>
+#include <stdlib.h>
 
 int main() {
 	struct gameState state;
+	int i, j;
 	
 	//cards to be used in this "game"
 	int k[10] = {adventurer, village, mine, smithy, council_room, feast, gardens, remodel, baron, great_hall};
 		   
 	int seed = 1000;	//some random seed to initialize game
 
-	initializeGame(2, k, seed), &G);
-
-	int i=0;
+	initializeGame(2, k, seed, &state);
 	
 	srand(time(NULL));
 
@@ -35,72 +37,78 @@ int main() {
 	//testing 11 values to provience counts
 	//there are only 8 providence in a 2 player game
 	//all values from 0-8 are tested along with a few outliers and a repeated 0
-	int testValues[11] = [0, 1, 2, 3, 4, 5, 6, 7, 8, -1, 0, 10];
+	int testValues[12] = {0, 1, 2, 3, 4, 5, 6, 7, 8, -1, 0, 10};
 	
 	/****************************************************/
 	printf("Running unit test 1.1\n");
-	for(int i = 0; i < 12; i++){
+	for(i = 0; i < 12; i++){
 		//adding -1, 1 or 0 to the province count
-		state->supplyCount[province] = testValues[i];
+		state.supplyCount[province] = testValues[i];
 		
-		printf("Provience Count: %d\n", state->supplyCount[province]);
+		//printf("Provience Count: %d\n", state.supplyCount[province]);
 		
-		int value = isGameOver();
-		if (state->supplyCount[province] == 0){
-			assert(value == 0);
+		int value = isGameOver(&state);
+		if (state.supplyCount[province] == 0){
+			assert(value == 1);
 			printf("Test 1 passed with provience count: %d\n", testValues[i]);
 		}
 	}
+	initializeGame(2, k, seed, &state);
 	
 	/****************************************************/
 	printf("Running unit test 1.2\n");
 	//supply testing with 4 kingdom cards
 	//there are only 8 of each supply for 2 players
 	for(i = 0; i < 11; i++){
-		for(int j = 0; j < 10; j++){
-			state->supplyCount[j] = testValues[i]
+		for(j = 0; j < 10; j++){
+			state.supplyCount[j] = testValues[i];
 		}
 		
-		int value = isGameOver();
+		int value = isGameOver(&state);
 		
 		//testing to see if isGameOver should return 0
-		int m;
-		for (i = 0; i < 10; i++){
-			if (state->supplyCount[i] == 0){
+		int m = 0;
+		for (j = 0; j < 10; j++){
+			if (state.supplyCount[j] == 0){
+				//printf("Supply %d: %d\n", j, state.supplyCount[j]);
 				//if a supplyCount is 0 increment m which is a counter for supplyCounts that equal 0
 				m++;
 			}
 		}
 		
 		if (m >= 3){
-			assert(value == 0);
-			printf("Test 2 passed with 3 supply counts equaling zero\n", testValues[i]);
+			assert(value == 1);
+			printf("Test 2 passed with 3 supply counts equaling zero\n");
 		}
 	}
+	initializeGame(2, k, seed, &state);
 	
 	/****************************************************/
 	printf("Running unit test 1.3\n");
 	//testing random combinations for testValues with supplys 1000 times
-	for(i = 0; i < 1000; i++){
-		for(int j = 0; j < 10; j++){
-			state->supplyCount[j] = testValues[rand() % 11]
+	for(i = 0; i < 100; i++){
+		for(j = 0; j < 10; j++){
+			state.supplyCount[j] = testValues[rand() % 11];
 		}
 		
-		int value = isGameOver();
+		int value = isGameOver(&state);
 		
-		//testing to see if isGameOver should return 0
-		int m;
-		for (i = 0; i < 4; i++){
-			if (state->supplyCount[i] == 0){
+		//testing to see if isGameOver should return 1
+		int m = 0;
+		for (j = 0; j < 10; j++){
+			if (state.supplyCount[k[j]] == 0){
+				//printf("Supply %d: %d\n", i, state.supplyCount[i]);
 				//if a supplyCount is 0 increment m which is a counter for supplyCounts that equal 0
 				m++;
 			}
 		}
 		
-		if (m == 3){
-			assert(value == 0);
-			printf("Test 3 passed with 3 supply counts equaling zero\n", testValues[i]);
+		if (m >= 3){
+			assert(value == 1);
+			printf("Test 3 passed with 3 supply counts equaling zero\n");
 		}
+		
+		m = 0;
 	}
 
     printf("All tests passed!\n");

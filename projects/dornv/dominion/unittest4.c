@@ -23,51 +23,49 @@ int main() {
 	
 	struct gameState state;
 	initializeGame(2, k, seed, &state);
-	int whoseTurn = state->whoseTurn;	//saving player 1
+	int whoseTurn = state.whoseTurn;	//saving player 1
 	
 	/****************************************************/
 	printf("Running unit test 4.1\n");
 	//normal end turn starting with player 1
-	endTurn(state);
-	assert(state->handCount[currentPlayer] == 0);
-	assert(whoseTurn == whoseTurn + 1);	//player 2's turn
-	assert(state->outpostPlayed == 0);
-	assert(state->phase == 0);
-	assert(state->numActions == 1);
-	assert(state->coins == 0);
-	assert(state->numBuys == 1);
-	assert(state->playedCardCount == 0);
-	assert(state->handCount[whoseTurn] == 0);
+	endTurn(&state);
+	assert(state.handCount[whoseTurn] == 0);
+	assert(whoseTurn == whoseTurn);
+	assert(state.outpostPlayed == 0);
+	assert(state.phase == 0);
+	assert(state.numActions == 1);
+	assert(state.numBuys == 1);
+	assert(state.playedCardCount == 0);
+	assert(state.handCount[whoseTurn] == 0);
 	
 	/****************************************************/
 	printf("Running unit test 4.2\n");
 	//normal end turn starting with player 2
-	endTurn(state);
-	assert(state->handCount[currentPlayer] == 0);
-	assert(whoseTurn == whoseTurn);	//wrapping back around to player 1's turn
-	assert(state->outpostPlayed == 0);
-	assert(state->phase == 0);
-	assert(state->numActions == 1);
-	assert(state->coins == 0);
-	assert(state->numBuys == 1);
-	assert(state->playedCardCount == 0);
-	assert(state->handCount[whoseTurn + 1] == 0);
+	endTurn(&state);
+	assert(state.handCount[whoseTurn + 1] == 0);
+	assert(whoseTurn == whoseTurn);
+	assert(state.outpostPlayed == 0);
+	assert(state.phase == 0);
+	assert(state.numActions == 1);
+	assert(state.numBuys == 1);
+	assert(state.playedCardCount == 0);
+	assert(state.handCount[whoseTurn + 1] == 0);
 	
 	/****************************************************/
 	printf("Running unit test 4.3\n");
 	//Ending turn after getting coin and buying a card
-	state->coins = 10;
-	buyCard(1, state);
-	endTurn(state);
-	assert(state->handCount[currentPlayer] == 0);
-	assert(whoseTurn == whoseTurn);	//wrapping back around to player 1's turn
-	assert(state->outpostPlayed == 0);
-	assert(state->phase == 0);
-	assert(state->numActions == 1);
-	assert(state->coins == 0);
-	assert(state->numBuys == 1);
-	assert(state->playedCardCount == 0);
-	assert(state->handCount[whoseTurn + 1] == 0);
+	state.coins = 10;
+	buyCard(1, &state);
+	endTurn(&state);
+	assert(state.handCount[whoseTurn] == 0);
+	assert(whoseTurn == whoseTurn);
+	assert(state.outpostPlayed == 0);
+	assert(state.phase == 0);
+	assert(state.numActions == 1);
+	assert(state.coins == (10 - getCost[1]);
+	assert(state.numBuys == 1);
+	assert(state.playedCardCount == 0);
+	assert(state.handCount[whoseTurn] == 0);
 	
 	printf("All tests passed!\n");
 	
