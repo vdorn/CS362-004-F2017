@@ -23,7 +23,6 @@ int main() {
 	
 	//supplies and proviences should be set to 8 for two player game
 	int supplyCount = 10;
-	int provienceCount = 8;
 	int victoryCount = 8;
 	
     struct gameState state;
@@ -66,7 +65,7 @@ int main() {
 			assert(state.supplyCount[k[i]] == victoryCount);
 			if(state.supplyCount[k[i]] != victoryCount){
 				//failing test if victory card count is incorrect
-				printf("VictoryCount[%d][%d]: %d; Expected: %d\n", k, i, state.supplyCount[k[i]], victoryCount);
+				printf("VictoryCount[%d]: %d; Expected: %d\n", i, state.supplyCount[k[i]], victoryCount);
 				passed = 1;
 			}
 		}
@@ -75,7 +74,7 @@ int main() {
 			assert(state.supplyCount[k[i]] == supplyCount);
 			if(state.supplyCount[k[i]] != supplyCount){
 				//failing test if supply card count is incorrect
-				printf("SupplyCount[%d][%d]: %d; Expected: %d\n", k, i, state.supplyCount[k[i]], supplyCount);
+				printf("SupplyCount[%d]: %d; Expected: %d\n", i, state.supplyCount[k[i]], supplyCount);
 				passed = 1;
 			}
 		}
@@ -178,7 +177,6 @@ int main() {
 	/****************************************************/
 	//setting up values for 4 player game
 	//supplyCount = 10;
-	provienceCount = 12;
 	victoryCount = 12;
 	numPlayer = 4;
 	passed = 0;
@@ -218,7 +216,7 @@ int main() {
 			//assert(state.supplyCount[k[i]] == victoryCount);
 			if(state.supplyCount[k[i]] != victoryCount){
 				//failing test if victory card count is incorrect
-				printf("VictoryCount[%d][%d]: %d; Expected: %d\n", k, i, state.supplyCount[k[i]], victoryCount);
+				printf("VictoryCount[%d]: %d; Expected: %d\n", i, state.supplyCount[k[i]], victoryCount);
 				passed = 1;
 			}
 		}
@@ -227,7 +225,7 @@ int main() {
 			//assert(state.supplyCount[k[i]] == supplyCount);
 			if(state.supplyCount[k[i]] != supplyCount){
 				//failing test if supply card count is incorrect
-				printf("SupplyCount[%d][%d]: %d; Expected: %d\n", k, i, state.supplyCount[k[i]], supplyCount);
+				printf("SupplyCount[%d]: %d; Expected: %d\n", i, state.supplyCount[k[i]], supplyCount);
 				passed = 1;
 			}
 		}
@@ -374,7 +372,7 @@ int main() {
 			//assert(state.supplyCount[k[i]] == victoryCount);
 			if(state.supplyCount[k[i]] != victoryCount){
 				//failing test if victory card count is incorrect
-				printf("VictoryCount[%d][%d]: %d; Expected: %d\n", k, i, state.supplyCount[k[i]], victoryCount);
+				printf("VictoryCount[%d]: %d; Expected: %d\n", i, state.supplyCount[k[i]], victoryCount);
 				passed = 1;
 			}
 		}
@@ -383,7 +381,7 @@ int main() {
 			//assert(state.supplyCount[k[i]] == supplyCount);
 			if(state.supplyCount[k[i]] != supplyCount){
 				//failing test if supply card count is incorrect
-				printf("SupplyCount[%d][%d]: %d; Expected: %d\n", k, i, state.supplyCount[k[i]], supplyCount);
+				printf("SupplyCount[%d]: %d; Expected: %d\n", i, state.supplyCount[k[i]], supplyCount);
 				passed = 1;
 			}
 		}

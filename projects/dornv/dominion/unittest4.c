@@ -16,9 +16,7 @@
 //int endTurn(struct gameState *state)
 
 int main() {
-	int i;
     int seed = 37;
-    int numPlayer = 2;
 	int k[10] = {adventurer, village, mine, smithy, council_room, feast, gardens, remodel, baron, great_hall};
 	int testPassed = 0;
 	int passed = 0;
