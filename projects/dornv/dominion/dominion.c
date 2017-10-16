@@ -102,34 +102,33 @@ int initializeGame(int numPlayers, int kingdomCards[10], int randomSeed,
   state->supplyCount[silver] = 40;
   state->supplyCount[gold] = 30;
 
-  //set number of Kingdom cards
-  for (i = adventurer; i <= treasure_map; i++)       	//loop all cards
-    {
-      for (j = 0; j < 10; j++)           		//loop chosen cards
-	{
-	  if (kingdomCards[j] == i)
-	    {
-	      //check if card is a 'Victory' Kingdom card
-	      if (kingdomCards[j] == great_hall || kingdomCards[j] == gardens)
+	//set number of Kingdom cards
+	//loop all cards
+	for (i = adventurer; i <= treasure_map; i++){       	
+		for (j = 0; j < 10; j++)           		//loop chosen cards
 		{
-		  if (numPlayers == 2){ 
-		    state->supplyCount[i] = 8; 
-		  }
-		  else{ state->supplyCount[i] = 12; }
+			if (kingdomCards[j] == i)
+			{
+				//check if card is a 'Victory' Kingdom card
+				if (kingdomCards[j] == great_hall || kingdomCards[j] == gardens)
+				{
+					if (numPlayers == 2){ 
+					state->supplyCount[i] = 8; 
+					}
+					else{ state->supplyCount[i] = 12; }
+				}
+				else
+				{
+					state->supplyCount[i] = 10;
+				}
+				break;
+			}
+			else    //card is not in the set choosen for the game
+			{
+				state->supplyCount[i] = -1;
+			}
 		}
-	      else
-		{
-		  state->supplyCount[i] = 10;
-		}
-	      break;
-	    }
-	  else    //card is not in the set choosen for the game
-	    {
-	      state->supplyCount[i] = -1;
-	    }
 	}
-
-    }
 
   ////////////////////////
   //supply intilization complete
@@ -199,8 +198,6 @@ int initializeGame(int numPlayers, int kingdomCards[10], int randomSeed,
 }
 
 int shuffle(int player, struct gameState *state) {
- 
-
   int newDeck[MAX_DECK];
   int newDeckPos = 0;
   int card;
@@ -348,43 +345,43 @@ int whoseTurn(struct gameState *state) {
 }
 
 int endTurn(struct gameState *state) {
-  int k;
-  int i;
-  int currentPlayer = whoseTurn(state);
-  
-  //Discard hand
-  for (i = 0; i < state->handCount[currentPlayer]; i++){
-    state->discard[currentPlayer][state->discardCount[currentPlayer]++] = state->hand[currentPlayer][i];//Discard
-    state->hand[currentPlayer][i] = -1;//Set card to -1
-  }
-  state->handCount[currentPlayer] = 0;//Reset hand count
-    
-  //Code for determining the player
-  if (currentPlayer < (state->numPlayers - 1)){ 
-    state->whoseTurn = currentPlayer + 1;//Still safe to increment
-  }
-  else{
-    state->whoseTurn = 0;//Max player has been reached, loop back around to player 1
-  }
+	int k;
+	int i;
+	int currentPlayer = whoseTurn(state);
 
-  state->outpostPlayed = 0;
-  state->phase = 0;
-  state->numActions = 1;
-  state->coins = 0;
-  state->numBuys = 1;
-  state->playedCardCount = 0;
-  state->handCount[state->whoseTurn] = 0;
+	//Discard hand
+	for (i = 0; i < state->handCount[currentPlayer]; i++){
+		state->discard[currentPlayer][state->discardCount[currentPlayer]++] = state->hand[currentPlayer][i];//Discard
+		state->hand[currentPlayer][i] = -1;//Set card to -1
+	}
+	state->handCount[currentPlayer] = 0;//Reset hand count
 
-  //int k; move to top
-  //Next player draws hand
-  for (k = 0; k < 5; k++){
-    drawCard(state->whoseTurn, state);//Draw a card
-  }
+	//Code for determining the player
+	if (currentPlayer < (state->numPlayers - 1)){ 
+		state->whoseTurn = currentPlayer + 1;//Still safe to increment
+	}
+	else{
+		state->whoseTurn = 0;//Max player has been reached, loop back around to player 1
+	}
 
-  //Update money
-  updateCoins(state->whoseTurn, state , 0);
+	state->outpostPlayed = 0;
+	state->phase = 0;
+	state->numActions = 1;
+	state->coins = 0;
+	state->numBuys = 1;
+	state->playedCardCount = 0;
+	state->handCount[state->whoseTurn] = 0;
 
-  return 0;
+	//int k; move to top
+	//Next player draws hand
+	for (k = 0; k < 5; k++){
+		drawCard(state->whoseTurn, state);//Draw a card
+	}
+
+	//Update money
+	updateCoins(state->whoseTurn, state , 0);
+
+	return 0;
 }
 
 int isGameOver(struct gameState *state) {
@@ -1303,8 +1300,8 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 	return -1;
 	}
 
-	int discardCard(int handPos, int currentPlayer, struct gameState *state, int trashFlag)
-	{
+int discardCard(int handPos, int currentPlayer, struct gameState *state, int trashFlag)
+{
 
 	//if card is not trashed, added to Played pile 
 	if (trashFlag < 1)

@@ -1,0 +1,14 @@
+*.gcda
+*.gcno
+*.gcov
+*.o
+cardtest1
+cardtest2
+cardtest3
+cardtest4
+playdom
+dominion
+unittest1
+unittest2
+unittest3
+unittest4

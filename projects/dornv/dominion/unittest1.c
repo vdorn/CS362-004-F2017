@@ -20,6 +20,7 @@
 int main() {
 	struct gameState state;
 	int i, j;
+	int testPassed = 0;
 	
 	//cards to be used in this "game"
 	int k[10] = {adventurer, village, mine, smithy, council_room, feast, gardens, remodel, baron, great_hall};
@@ -40,7 +41,7 @@ int main() {
 	int testValues[12] = {0, 1, 2, 3, 4, 5, 6, 7, 8, -1, 0, 10};
 	
 	/****************************************************/
-	printf("Running unit test 1.1\n");
+	printf("Running unit test 1.1: Testing Provience values {0, 1, 2, 3, 4, 5, 6, 7, 8, -1, 0, 10}\n");
 	for(i = 0; i < 12; i++){
 		//adding -1, 1 or 0 to the province count
 		state.supplyCount[province] = testValues[i];
@@ -49,14 +50,21 @@ int main() {
 		
 		int value = isGameOver(&state);
 		if (state.supplyCount[province] == 0){
-			assert(value == 1);
-			printf("Test 1 passed with provience count: %d\n", testValues[i]);
+			//assert(value == 1);
+			if(value == 1){
+				printf("Test 1 passed with provience count: %d\n", testValues[i]);
+				testPassed++;
+			}
+			else{
+				printf("Test FAILED with provience count: %d\n", testValues[i]);
+			}
+			
 		}
 	}
 	initializeGame(2, k, seed, &state);
 	
 	/****************************************************/
-	printf("Running unit test 1.2\n");
+	printf("Running unit test 1.2: Testing Kingdom values {0, 1, 2, 3, 4, 5, 6, 7, 8, -1, 0, 10}\n");
 	//supply testing with 4 kingdom cards
 	//there are only 8 of each supply for 2 players
 	for(i = 0; i < 11; i++){
@@ -77,15 +85,21 @@ int main() {
 		}
 		
 		if (m >= 3){
-			assert(value == 1);
-			printf("Test 2 passed with 3 supply counts equaling zero\n");
+			//assert(value == 1);
+			if(value == 1){
+				printf("Test 2 passed with 3 supply counts equaling zero\n");
+				testPassed++;
+			}
+			else{
+				printf("Test 2 FAILED with 3 supply counts equaling zero\n");
+			}
 		}
 	}
 	initializeGame(2, k, seed, &state);
 	
 	/****************************************************/
-	printf("Running unit test 1.3\n");
-	//testing random combinations for testValues with supplys 1000 times
+	printf("Running unit test 1.3: Testing random Kingdom values {0, 1, 2, 3, 4, 5, 6, 7, 8, -1, 0, 10}\n");
+	//testing random combinations for testValues with supplys 100 times
 	for(i = 0; i < 100; i++){
 		for(j = 0; j < 10; j++){
 			state.supplyCount[j] = testValues[rand() % 11];
@@ -105,13 +119,22 @@ int main() {
 		
 		if (m >= 3){
 			assert(value == 1);
+			if(value == 1){
+				printf("Test 3 passed with 3 supply counts equaling zero\n");
+				if(testPassed < 3){
+					testPassed++;	//making the last test pass
+				}
+			}
+			else{
+				printf("Test 3 FAILED with 3 supply counts equaling zero\n");
+			}
 			printf("Test 3 passed with 3 supply counts equaling zero\n");
 		}
 		
 		m = 0;
 	}
 
-    printf("All tests passed!\n");
+    printf("Passing Tests: %d/3\n", testPassed);
 
     return 0;
 }
