@@ -20,7 +20,8 @@ char *inputString()
 	int stringLength = 6;
 	
 	//string with lower case alphabet for string creation
-	char * charOptions = "abcdefghijklmnopqrstuvwxyz";
+	//char * charOptions = "abcdefghijklmnopqrstuvwxyz";
+	char * charOptions = "rest";
     char * randomString = (char*) malloc(sizeof(char) * stringLength);
 	
 	//looping through each char in string to fill it with a random lower case char
@@ -50,7 +51,7 @@ void testme()
     s = inputString();
 	
 	//this print must be removed to speed up the program
-    //printf("Iteration %d: c = %c, s = %s, state = %d\n", tcCount, c, s, state);
+    printf("Iteration %d: c = %c, s = %s, state = %d\n", tcCount, c, s, state);
 
     if (c == '[' && state == 0) state = 1;
     if (c == '(' && state == 1) state = 2;
@@ -67,9 +68,10 @@ void testme()
 		&& state == 9){
       printf("error ");
 	  //adding print here to state iteration c, s and state value after test completes
-	  printf("Iteration %d: c = %c, s = %s, state = %d\n", tcCount, c, s, state);
+	  //printf("Iteration %d: c = %c, s = %s, state = %d\n", tcCount, c, s, state);
       exit(200);
     }
+	free(s);
   }
 }
 
