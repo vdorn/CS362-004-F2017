@@ -50,7 +50,6 @@ void testme()
     c = inputChar();
     s = inputString();
 	
-	//this print must be removed to speed up the program
     printf("Iteration %d: c = %c, s = %s, state = %d\n", tcCount, c, s, state);
 
     if (c == '[' && state == 0) state = 1;
@@ -68,6 +67,7 @@ void testme()
 		&& state == 9){
       printf("error ");
 	  //adding print here to state iteration c, s and state value after test completes
+	  //if possible this would speed up test execution
 	  //printf("Iteration %d: c = %c, s = %s, state = %d\n", tcCount, c, s, state);
       exit(200);
     }
