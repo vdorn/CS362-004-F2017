@@ -2,6 +2,7 @@
 *.gcno
 *.gcov
 *.o
+*.out
 cardtest1
 cardtest2
 cardtest3

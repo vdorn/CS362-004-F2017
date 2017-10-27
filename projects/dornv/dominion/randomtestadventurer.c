@@ -26,8 +26,8 @@ int main() {
 	memset(tempString, '\0', sizeof(char) * 15);
 	
 	//keeping track of failed test cases
-	char * testFailed = (char *) malloc(sizeof(char) * 512);
-	memset(testFailed, '\0', sizeof(char) * 512);
+	char * testFailed = (char *) malloc(sizeof(char) * 16384);
+	memset(testFailed, '\0', sizeof(char) * 16384);
 	
 	time_t timeNow = time(NULL);
 	
@@ -38,7 +38,7 @@ int main() {
 	/********************************************/
 	printf("Running random card tests\n");
 	//run 100 random tests
-	for(m = 0; m < 100; m++){
+	for(m = 0; m < 1000; m++){
 		passed = 0;
 		printf("Run %d...\n", m);
 		//initializing game with 2 players
@@ -116,12 +116,12 @@ int main() {
 			testPassed++;
 		}
 		else{
-			sprintf(tempString, "Run %d; ", m);
+			sprintf(tempString, "%d; ", m);
 			strcat(testFailed, tempString);
 		}
 	}
 	
-	printf("Passing Tests: %d/100\n", testPassed);
+	printf("Passing Tests: %d/1000\n", testPassed);
 	printf("Test failed: %s\n", testFailed);
 	printf("Dominion Seed: 37\n");
 	printf("Time as Seed: %ld\n", (long)timeNow);
