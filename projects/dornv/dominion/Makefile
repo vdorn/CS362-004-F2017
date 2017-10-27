@@ -73,6 +73,21 @@ randomcardtest1: randomcardtest1.c dominion.o rngs.o
 	
 randomcardtest2: randomcardtest2.c dominion.o rngs.o
 	gcc -o randomcardtest2 -g  randomcardtest2.c dominion.o rngs.o $(CFLAGS)
+	
+randomtestadventurer.out: randomtestadventurer
+	./randomtestadventurer >> randomtestadventurer.out
+	gcov -abcfu dominion.c >> randomtestadventurer.out
+	cat dominion.c.gcov >> randomtestadventurer.out
+	
+randomcardtest1.out: randomcardtest1
+	./randomcardtest1 >> randomcardtest1.out
+	gcov -abcfu dominion.c >> randomcardtest1.out
+	cat dominion.c.gcov >> randomcardtest1.out
+	
+randomcardtest2.out: randomcardtest2
+	./randomcardtest2 >> randomcardtest2.out
+	gcov -abcfu dominion.c >> randomcardtest2.out
+	cat dominion.c.gcov >> randomcardtest2.out
 
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
