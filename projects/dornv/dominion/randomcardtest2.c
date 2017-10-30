@@ -1,3 +1,9 @@
+/***************************************************
+** Random Tester for Council Room Card
+** Added to makefile:
+** randomcardtest2: randomcardtest2.c dominion.o rngs.o
+**	gcc -o randomcardtest2 -g  randomcardtest2.c dominion.o rngs.o $(CFLAGS)
+****************************************************/
 #include "dominion.h"
 #include "dominion_helpers.h"
 #include <string.h>

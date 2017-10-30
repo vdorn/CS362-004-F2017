@@ -1,3 +1,9 @@
+/***************************************************
+** Random Tester for Adventurer Card
+** Added to makefile:
+** randomtestadventurer: randomtestadventurer.c dominion.o rngs.o
+**	gcc -o randomtestadventurer -g  randomtestadventurer.c dominion.o rngs.o $(CFLAGS)
+****************************************************/
 #include "dominion.h"
 #include "dominion_helpers.h"
 #include <string.h>
