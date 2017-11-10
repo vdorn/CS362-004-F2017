@@ -1,327 +1,151 @@
-/* Program Filename: unittest1.c
- * Author: Barbara Jane Klinger
- * Date: 10/18/2017
- * Description: Unit tests for the fullDeckCount Dominion function.
- * Input: None.
- * Output: This program implements unit testing for the fullDeckCount function
- * implemented by the Dominion game.  The results of the testing are printed
- * to the display for closer inspection and examination.
+/* -----------------------------------------------------------------------
+ * Unit test for the isGameOver() function within dominion.c
+ * Include the following lines in your makefile:
+ *
+ * unittest1: unittest1.c dominion.o rngs.o
+ *      gcc -o unittest1 -g  unittest1.c dominion.o rngs.o $(CFLAGS)
+ * -----------------------------------------------------------------------
  */
 
 #include "dominion.h"
 #include "dominion_helpers.h"
-#include "rngs.h"
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+#include <assert.h>
+#include "rngs.h"
+#include <time.h>
+#include <math.h>
+#include <stdlib.h>
 
-// Define constants:
-#define TESTFUN "fullDeckCount"
-#define TESTCARD "minion"
-#define TESTENUM 17
-#define GOLDENUM 6
-#define STEWENUM 18
-#define ESTENUM 1
-#define NUMTEST 10
-#define PLAYERS 2
-#define FALSE 0
-#define TRUE 1
-#define SEED 10
-#define VOID -1
-#define THIS_PLAYER 0
-
-// Function prototypes:
-void assertTrue(int);
-void printSupply(struct gameState *, struct gameState *, int, int);
-void printHand(struct gameState *, int);
-void printDiscard(struct gameState *, int);
-void printDeck(struct gameState *, int);
-void unitTestSuite(struct gameState *, struct gameState *);
-int handCount(struct gameState *, int, int);
-int discardCount(struct gameState *, int, int);
-int deckCount(struct gameState *, int, int);
-void setDeck(struct gameState *, int, int);
-void setHand(struct gameState *, int, int);
-void setDiscard(struct gameState *, int, int);
-
-int main(){
-
-	// Declare local variables:
-	int cards[10] = {adventurer, gardens, embargo, village, minion, mine, cutpurse, sea_hag, tribute, smithy};
-	struct gameState Game, TestGame;
-
-	// Create instance of a game:
-	initializeGame(PLAYERS, cards, SEED, &Game);
-	printf("\n*** INITIALIZING %s FUNCTION UNIT TESTS ***\n\n", TESTFUN);
-
-	// CONDITION 1: Hand/Deck/Discard empty
-	printf("*** %s FUNCTION CONDITION 1: Hand/Deck/Discard all empty ***", TESTFUN);
-	setDeck(&Game, VOID, NUMTEST);
-	Game.deckCount[THIS_PLAYER] = FALSE;
-	setHand(&Game, VOID, NUMTEST);
-	Game.handCount[THIS_PLAYER] = FALSE;
-	setDiscard(&Game, VOID, NUMTEST);
-	Game.discardCount[THIS_PLAYER] = FALSE;
-
-	// Copy game instance to test case:
-	memcpy(&TestGame, &Game, sizeof(struct gameState));
-
-	// Run unit test suite:
-	unitTestSuite(&Game, &TestGame);
-
-	// CONDITION 2: Hand/Deck/Discard sets do not contain specified card:
-	printf("\n*** %s FUNCTION CONDITION 2: Hand/Deck/Discard do not contain search card ***", TESTFUN);
-	setDeck(&Game, GOLDENUM, NUMTEST);
-	Game.deckCount[THIS_PLAYER] = NUMTEST;
-	setHand(&Game, STEWENUM, NUMTEST);
-	Game.handCount[THIS_PLAYER] = NUMTEST;
-	setDiscard(&Game, ESTENUM, NUMTEST);
-	Game.discardCount[THIS_PLAYER] = NUMTEST;
-
-	// Copy game instance to test case:
-	memcpy(&TestGame, &Game, sizeof(struct gameState));
-
-	// Run unit test suite:
-	unitTestSuite(&Game, &TestGame);
-
-	// CONDITION 3: Hand/Deck/Discard sets do contain specified card:
-	printf("\n*** %s FUNCTION CONDITION 3: Hand/Deck/Discard contain search card ***", TESTFUN);
-	Game.deck[THIS_PLAYER][3] = TESTENUM;
-	Game.deck[THIS_PLAYER][6] = TESTENUM;
-	Game.discard[THIS_PLAYER][0] = TESTENUM;
-	Game.hand[THIS_PLAYER][9] = TESTENUM;
-
-	// Copy game instance to test case:
-	memcpy(&TestGame, &Game, sizeof(struct gameState));
-
-	// Run unit test suite:
-	unitTestSuite(&Game, &TestGame);
-
-	return 0;
-}
-
-void unitTestSuite(struct gameState *Game, struct gameState *TestGame){
-
-	// Declare local variables:
-	int testCount = VOID;
-	int actualCount = VOID;
-
-	// Run the fullDeckCount function to search for the test card:
-	testCount = fullDeckCount(THIS_PLAYER, TESTENUM, TestGame);
-	actualCount = deckCount(Game, THIS_PLAYER, TESTENUM) +
-		discardCount(Game, THIS_PLAYER, TESTENUM) +
-		handCount(Game, THIS_PLAYER, TESTENUM);
-	printf("\n\n*** TESTING CONDITION ***\n\n");
-	printf("Counting the number of %s cards in full deck:\n\n", TESTCARD);
-
-	// Game state: function should return the correct number of cards:
-	printf("Number of %s cards: %d; should be: %d",
-		TESTCARD, testCount, actualCount);
-	printf("\nGAME STATE: function should have returned the correct number of cards - ");
-	assertTrue(testCount == actualCount);
-
-	// Game state: Player hand should not have changed:
-	printf("\nNumber of cards in the player hand: %d; should be: %d", 
-		TestGame->handCount[THIS_PLAYER], Game->handCount[THIS_PLAYER]);
-	printf("\nGAME STATE: No changes to the player hand - ");
-	assertTrue(TestGame->handCount[THIS_PLAYER] == Game->handCount[THIS_PLAYER]);
-	printf("\nPlayer hand is:\n");
-	printHand(TestGame, THIS_PLAYER);
-	printf("\nPlayer hand should be:\n");
-	printHand(Game, THIS_PLAYER);
-
-	// Game state: Player deck should not have changed:
-	printf("\n\nNumber of cards in the player deck: %d; should be: %d", 
-		TestGame->deckCount[THIS_PLAYER], Game->deckCount[THIS_PLAYER]);
-	printf("\nGAME STATE: No changes to the player deck - ");
-	assertTrue(TestGame->deckCount[THIS_PLAYER] == Game->deckCount[THIS_PLAYER]);
-	printf("\nPlayer deck is:\n");
-	printDeck(TestGame, THIS_PLAYER);
-	printf("\nPlayer deck should be:\n");
-	printDeck(Game, THIS_PLAYER);
-
-	// Game state: Player discard should not have changed:
-	printf("\n\nNumber of cards in the player discard: %d; should be: %d", 
-		TestGame->discardCount[THIS_PLAYER], Game->discardCount[THIS_PLAYER]);
-	printf("\nGAME STATE: No changes to the player discard - ");
-	assertTrue(TestGame->discardCount[THIS_PLAYER] == Game->discardCount[THIS_PLAYER]);
-	printf("\nPlayer discard is:\n");
-	printDiscard(TestGame, THIS_PLAYER);
-	printf("\nPlayer discard should be:\n");
-	printDiscard(Game, THIS_PLAYER);
-	printf("\n");
-}
-
-void setDeck(struct gameState *game, int card, int num){
-
-	// Declare local variables:
-	int index;
-
-	// Add the specified cards to the deck:
-	for(index = 0; index < num; index++){
-
-		game->deck[THIS_PLAYER][index] = card;
-	}
-}
-
-void setHand(struct gameState *game, int card, int num){
-
-	// Declare local variables:
-	int index;
-
-	// Add the specified cards to the deck:
-	for(index = 0; index < num; index++){
-
-		game->hand[THIS_PLAYER][index] = card;
-	}
-}
-
-void setDiscard(struct gameState *game, int card, int num){
-
-	// Declare local variables:
-	int index;
-
-	// Add the specified cards to the deck:
-	for(index = 0; index < num; index++){
-
-		game->discard[THIS_PLAYER][index] = card;
-	}
-}
-
-
-
-int deckCount(struct gameState *game, int player, int card){
-
-	// Declare local variables:
-	int count = 0;
-	int index;
-
-	// Search through the hand for the specified card:
-	for(index = 0; index < game->deckCount[player]; index++){
+int main() {
+	struct gameState state;
+	int i, j;
+	int testPassed = 0;
+	int passed = 0;
 	
-		// If card found; increment count:
-		if(game->deck[player][index] == card)
-			count++; 
-	}
+	//cards to be used in this "game"
+	int k[10] = {adventurer, village, mine, smithy, council_room, feast, gardens, remodel, baron, great_hall};
+		   
+	int seed = 1000;	//some random seed to initialize game
+
+	initializeGame(2, k, seed, &state);
 	
-	return count;
-}
+	srand(time(NULL));
 
-int discardCount(struct gameState *game, int player, int card){
+    printf ("TESTING isGameOver():\n");
 
-	// Declare local variables:
-	int count = 0;
-	int index;
-
-	// Search through the hand for the specified card:
-	for(index = 0; index < game->discardCount[player]; index++){
+	//testing that a game is over if providences is 0 or if 3 supply piles are zero
 	
-		// If card found; increment count:
-		if(game->discard[player][index] == card)
-			count++; 
-	}
+	//testing 11 values to provience counts
+	//there are only 8 providence in a 2 player game
+	//all values from 0-8 are tested along with a few outliers and a repeated 0
+	int testValues[12] = {0, 1, 2, 3, 4, 5, 6, 7, 8, -1, 0, 10};
 	
-	return count;
-}
-
-int handCount(struct gameState *game, int player, int card){
-
-	// Declare local variables:
-	int count = 0;
-	int index;
-
-	// Search through the hand for the specified card:
-	for(index = 0; index < game->handCount[player]; index++){
-	
-		// If card found; increment count:
-		if(game->hand[player][index] == card)
-			count++; 
-	}
-	
-	return count;
-}
-
-void assertTrue(int result){
-
-	// Print assert statement according to passed results:
-	if (result == FALSE)
-		printf("TEST FAILED!!\n");
-	else
-		printf("TEST PASSED!!\n");
-}
-
-void printSupply(struct gameState *expected, struct gameState *test, int start, int end){
-
-	// Declare local variables:
-	int index;
-	
-	// Print result headers:
-	printf("\nCard:\tIs:\tShould be:\tTest:\n");
-
-	// Loop through specified supply counts to compare expected and test values:
-	for(index = start; index < end; index++){
-
-		// Print results to the display:
-		printf("%d\t%d\t%d\t\t", index, test->supplyCount[index], expected->supplyCount[index]);
-		assertTrue(test->supplyCount[index] == expected->supplyCount[index]);
-	 }
-}
-
-void printHand(struct gameState *game, int player){
-
-	// Declare local variables:
-	int index;
-
-	// Determine if any cards are present in the hand:
-	if(game->handCount[player] > 0){
-
-		// Print the enum values of the cards in the hand:
-		for(index = 0; index < game->handCount[player]; index++){
-	 						
-			printf("%d, ", game->hand[player][index]);
-		}
-	}
-	else{
-		printf("Empty Set");
-	}
-}
-
-void printDeck(struct gameState *game, int player){
-
-	// Declare local variables:
-	int index;
-	
-	// Determine if any cards are present in the deck:
-	if(game->deckCount[player] > 0){
+	/****************************************************/
+	printf("Running unit test 1.1: Testing Provience values {0, 1, 2, 3, 4, 5, 6, 7, 8, -1, 0, 10}\n");
+	for(i = 0; i < 12; i++){
+		//adding -1, 1 or 0 to the province count
+		state.supplyCount[province] = testValues[i];
 		
-		// Print the enum values of the cards in the deck:
-		for(index = 0; index < game->deckCount[player]; index++){
-
-			printf("%d, ", game->deck[player][index]);
-		}
-	}
-	else{
-		printf("Empty Set");
-	}
-}
-
-void printDiscard(struct gameState *game, int player){
-
-	// Declare local variables: 
-	int index;
-	
-	// Determine if any cards are present in the discard pile:
-	if(game->discardCount[player] > 0){
+		//printf("Provience Count: %d\n", state.supplyCount[province]);
+		
+		int value = isGameOver(&state);
+		if (state.supplyCount[province] == 0){
+			//assert(value == 1);
+			if(value == 1){
+				printf("Test 1 passed with provience count: %d\n", testValues[i]);
+			}
+			else{
+				printf("Test FAILED with provience count: %d\n", testValues[i]);
+				passed = 1;
+			}
 			
-		// Print enum values of the discard pile cards:
-		for(index = 0; index < game->discardCount[player]; index++){
-
-			printf("%d, ", game->discard[player][index]);
 		}
 	}
-	else{ 
-		printf("Empty Set"); 
+	
+	if(passed == 0){
+		testPassed++;
 	}
+	
+	/****************************************************/
+	initializeGame(2, k, seed, &state);
+	passed = 0;
+	printf("Running unit test 1.2: Testing Kingdom values {0, 1, 2, 3, 4, 5, 6, 7, 8, -1, 0, 10}\n");
+	//supply testing with 4 kingdom cards
+	//there are only 8 of each supply for 2 players
+	for(i = 0; i < 11; i++){
+		for(j = 0; j < 10; j++){
+			state.supplyCount[j] = testValues[i];
+		}
+		
+		int value = isGameOver(&state);
+		
+		//testing to see if isGameOver should return 0
+		int m = 0;
+		for (j = 0; j < 10; j++){
+			if (state.supplyCount[j] == 0){
+				//printf("Supply %d: %d\n", j, state.supplyCount[j]);
+				//if a supplyCount is 0 increment m which is a counter for supplyCounts that equal 0
+				m++;
+			}
+		}
+		
+		if (m >= 3){
+			//assert(value == 1);
+			if(value == 1){
+				printf("Test 2 passed with 3 supply counts equaling zero\n");
+			}
+			else{
+				printf("Test 2 FAILED with 3 supply counts equaling zero\n");
+				passed = 1;
+			}
+		}
+	}
+	
+	if(passed == 0){
+		testPassed++;
+	}
+	
+	/****************************************************/
+	initializeGame(2, k, seed, &state);
+	printf("Running unit test 1.3: Testing random Kingdom values {0, 1, 2, 3, 4, 5, 6, 7, 8, -1, 0, 10}\n");
+	//testing random combinations for testValues with supplys 100 times
+	for(i = 0; i < 100; i++){
+		for(j = 0; j < 10; j++){
+			state.supplyCount[j] = testValues[rand() % 11];
+		}
+		
+		int value = isGameOver(&state);
+		
+		//testing to see if isGameOver should return 1
+		int m = 0;
+		for (j = 0; j < 10; j++){
+			if (state.supplyCount[k[j]] == 0){
+				//printf("Supply %d: %d\n", i, state.supplyCount[i]);
+				//if a supplyCount is 0 increment m which is a counter for supplyCounts that equal 0
+				m++;
+			}
+		}
+		
+		if (m >= 3){
+			//assert(value == 1);
+			if(value == 1){
+				printf("Test 3 passed with 3 supply counts equaling zero\n");
+			}
+			else{
+				printf("Test 3 FAILED with 3 supply counts equaling zero\n");
+				passed = 1;
+			}
+		}
+		
+		m = 0;
+	}
+	
+	if(passed == 0){
+		testPassed++;
+	}
+
+    printf("Passing Tests: %d/3\n", testPassed);
+
+    return 0;
 }
-
-

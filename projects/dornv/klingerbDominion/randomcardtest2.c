@@ -1,8 +1,8 @@
 /***************************************************
-** Random Tester for Adventurer Card
+** Random Tester for Council Room Card
 ** Added to makefile:
-** randomtestadventurer: randomtestadventurer.c dominion.o rngs.o
-**	gcc -o randomtestadventurer -g  randomtestadventurer.c dominion.o rngs.o $(CFLAGS)
+** randomcardtest2: randomcardtest2.c dominion.o rngs.o
+**	gcc -o randomcardtest2 -g  randomcardtest2.c dominion.o rngs.o $(CFLAGS)
 ****************************************************/
 #include "dominion.h"
 #include "dominion_helpers.h"
@@ -14,20 +14,18 @@
 #include <time.h>
 
 int main() {
-    int seed = 37;
+	int seed = 37;
 	int k[10] = {adventurer, gardens, embargo, village, minion, mine, cutpurse,
            sea_hag, tribute, smithy};
-	int deckCards[4] = {copper, gold, silver, adventurer};
 	
 	int currentPlayer;
 	int handPos;
 	int passed = 0;
 	int testPassed = 0;
 	
-	//int deckSize;
 	int handCount;
 	int playerCount;
-	int i, j, m;
+	int i, m;
 	char * tempString = (char *) malloc(sizeof(char) * 15);
 	memset(tempString, '\0', sizeof(char) * 15);
 	
@@ -39,11 +37,8 @@ int main() {
 	
 	srand(timeNow);
 	
-	printf ("TESTING adventurerCard():\n");
+	printf ("TESTING councilRoomCard():\n");
 	
-	/********************************************/
-	printf("Running random card tests\n");
-	//run 100 random tests
 	for(m = 0; m < 1000; m++){
 		passed = 0;
 		printf("Run %d...\n", m);
@@ -58,12 +53,6 @@ int main() {
 		//printf("Starting Deck Count: %d\n", 10);
 		for(i = 0; i < playerCount; i++){
 			state.deckCount[i] = 10;
-			//filling the deck with copper, silver, and gold
-			//to increase code coverage
-			for(j = 0; j < 10; j++){
-				state.deck[i][j] = deckCards[rand() % 4];
-				//printf("Card: %i\n", state.deck[i][j]);
-			}
 		}
 		
 		//random hand counts between 1 and 5
@@ -88,42 +77,45 @@ int main() {
 		struct gameState temp;
 		memcpy(&temp, &state, sizeof(struct gameState));
 	
-		int returnValue = cardEffect(adventurer, 0, 0, 0, &state, handPos, 0);
-	
-		//printf("Deck Count after call: %d\n", state.deckCount[currentPlayer]);
-		//printf("Hand Count after call: %d\n", state.handCount[currentPlayer]);
+		int returnValue = cardEffect(council_room, 0, 0, 0, &state, handPos, 0);
 		
-		//assert(returnValue == 0);
+		//check values here
 		if(returnValue != 0){
 			passed = 1;
 			printf("Card Effect Returned: %d, Expected: %d\n", returnValue, 0);
 		}
 		
-		//assert(state.coins >= 2); //at least two coins/treasures were drawn from the deck
-		if(state.coins < 2){
+		//check plus one buy for current player
+		//assert(state.numBuys == (temp.numBuys + 1));
+		if(state.numBuys != (temp.numBuys + 1)){
 			passed = 1;
-			printf("Coins: %d, Expected: >= 2\n", state.coins);
+			printf("Num Buys: %d, Expected: %d\n", state.numBuys, (temp.numBuys + 1));
 		}
 		
-		//assert(state.deckCount[0] <= 8); //at least two cards were drawn
-		if(state.deckCount[currentPlayer] > (temp.deckCount[currentPlayer] - 2)){
-			passed = 1;
-			printf("Deck Count P1: %d, Expected: <= %d\n", state.deckCount[0], (temp.deckCount[currentPlayer] - 2));
-		}
-		
-		//checking discard pile count
-		//must be equal to previous hand count plus 10 (starting deck size) minus current hand size plus current deck count
-		if(state.discardCount[currentPlayer] != ((10 + temp.handCount[currentPlayer]) - (state.deckCount[currentPlayer] + state.handCount[currentPlayer]))){
-			passed = 1;
-			printf("Discard count P%d: %d, Expected: %d\n", currentPlayer + 1, state.discardCount[currentPlayer], ((10 + temp.handCount[currentPlayer]) - (state.deckCount[currentPlayer] + state.handCount[currentPlayer])));
+		//check card count for every player temp card count for each player plus 1 unless current player
+		//assert(state.handCount[1] == (temp.handCount[1] + 1));
+		for(i = 0; i < playerCount; i++){
+			if(i == currentPlayer){
+				if(state.handCount[currentPlayer] != (temp.handCount[currentPlayer] + 3)){
+					passed = 1;
+					printf("Hand Count P%d: %d, Expected: %d\n", currentPlayer + 1, state.handCount[currentPlayer], (temp.handCount[currentPlayer] + 3));
+				}
+			}
+			else{
+				if(state.handCount[i] != (temp.handCount[i] + 1)){
+					passed = 1;
+					printf("Hand Count P%d: %d, Expected: %d\n", i + 1, state.handCount[i], (temp.handCount[i] + 1));
+				}
+			}
 		}
 		
 		if(passed == 0){
 			testPassed++;
 		}
 		else{
-			sprintf(tempString, "%d; ", m);
+			sprintf(tempString, "%d; ", m + 1);
 			strcat(testFailed, tempString);
+			memset(tempString, '\0', sizeof(char) * 15);
 		}
 	}
 	
