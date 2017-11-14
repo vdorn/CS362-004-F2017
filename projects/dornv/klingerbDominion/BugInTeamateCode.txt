@@ -1,0 +1,94 @@
+Title: Adventurer Card Treasure Draw Off By One
+
+Class: Simple Bug
+
+Date: 11/13/2017          
+Reported By: Victoria Dorn
+Email: dornv@oregonstate.edu   
+
+
+Product: dominion.c
+Platform: Windows 10 with BASH
+
+Is it reproducible: Yes
+
+Description
+===========
+The adventurer card does not produce an accuracte discard count after the card is played.
+
+
+Steps to Produce/Reproduce
+--------------------------
+1. Build dominion with the make dominion command
+2. Build the random test with the command make randomtestadventurer
+3. Run randomtestadventurer
+4. Observe the output of unexpected discard counts
+
+
+Expected Results
+----------------
+The card is expected to discard all cards drawn with its ability (draw cards until 2 treasures are revealed).
+
+
+Actual Results
+--------------
+The card does not discard the correct number of cards.
+
+
+Workarounds
+-----------
+N/A
+
+
+Attachments
+-----------
+randomtestadventurer.c
+
+
+==============================================================================
+
+Title: Smithy Card Draw Count
+
+Class: Simple Bug
+
+Date: 11/13/2017          
+Reported By: Victoria Dorn
+Email: dornv@oregonstate.edu   
+
+
+Product: dominion.c
+Platform: Windows 10 with BASH
+
+Is it reproducible: Yes
+
+Description
+===========
+The smithy card does not draw the correct number of cards when played.
+
+
+Steps to Produce/Reproduce
+--------------------------
+1. Build dominion with the make dominion command
+2. Build the card unit test with the command make cardtest1
+3. Run cardtest1
+4. Observe the output of hard count and unexpected deck count.
+
+
+Expected Results
+----------------
+The card is expected to draw the player 3 cards, but instead the card draws the player 4 cards.
+
+
+Actual Results
+--------------
+The card draws the player 4 cards.
+
+
+Workarounds
+-----------
+N/A
+
+
+Attachments
+-----------
+cardtest1.c
