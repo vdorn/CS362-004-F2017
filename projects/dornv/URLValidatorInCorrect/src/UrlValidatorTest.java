@@ -40,6 +40,7 @@ public class UrlValidatorTest extends TestCase {
    
    public void testManualTest()
    {
+	   System.out.println("Starting Manual Testing");
 	   UrlValidator urlVal = new UrlValidator(null, null, UrlValidator.ALLOW_ALL_SCHEMES);
 	   System.out.println(urlVal.isValid("http://www.amazon.com")); //true
 	   System.out.println(urlVal.isValid("http://www..amazon.com")); //false
@@ -62,7 +63,7 @@ public class UrlValidatorTest extends TestCase {
 	   System.out.println(urlVal.isValid("www.google.com:65a")); //false
 	   System.out.println(urlVal.isValid("www.google.com")); //false, but should return true
 	   System.out.println(urlVal.isValid("www.amazon.com")); //false, but should return true
-	   
+	   System.out.println("\n");
    }
    
    //Maybe partition based on URLs that are just one off being correct and their correct count part?
@@ -71,14 +72,42 @@ public class UrlValidatorTest extends TestCase {
    //This could test some sort of boundary values
    //We could also test URLs with one of the 5 URL parts being incorrect
    //EX: http://www..amazon.com and http://www.amazon.com:65a
+   
+   //valid partition
    public void testYourFirstPartition()
    {
+	   System.out.println("Starting First Partition");
 	   UrlValidator urlVal = new UrlValidator(null, null, UrlValidator.ALLOW_ALL_SCHEMES);
-	   System.out.println(urlVal.isValid("http://www.amazon.com")); //true
+	   System.out.println(urlVal.isValid("http://www.amazon.com:80/test")); //true
+	   System.out.println(urlVal.isValid("http://www.amazon.com:0?action=edit&mode=up")); //true
+	   System.out.println(urlVal.isValid("http://www.amazon.com:0?action=edit&mode=up")); //true
+	   System.out.println(urlVal.isValid("ftp://www.google.com:65535")); //true
+	   System.out.println(urlVal.isValid("https://www.google.com:65535")); //true
+	   System.out.println(urlVal.isValid("h3t://www.google.com:65535")); //true
+	   System.out.println(urlVal.isValid("http://www.facebook.com")); //true
+	   System.out.println(urlVal.isValid("https://www.facebook.com")); //true
+	   System.out.println(urlVal.isValid("https://www.facebook.com?action=view")); //true
+	   System.out.println("\n");
    }
    
+   //invalid partition
    public void testYourSecondPartition(){
-	   
+	   System.out.println("Starting Second Partition");
+	   UrlValidator urlVal = new UrlValidator(null, null, UrlValidator.ALLOW_ALL_SCHEMES);
+	   System.out.println(urlVal.isValid("http:/www.amazon.com")); //false
+	   System.out.println(urlVal.isValid("htp://www.amazon.com")); //false
+	   System.out.println(urlVal.isValid("http://wwww.amazon.com")); //false
+	   System.out.println(urlVal.isValid("http://ww.facebook.com")); //false
+	   System.out.println(urlVal.isValid("http://www..google.com")); //false
+	   System.out.println(urlVal.isValid("http://www.google.com:80a")); //false
+	   System.out.println(urlVal.isValid("http://www.google.com:80testing123")); //false
+	   System.out.println(urlVal.isValid("http://www.google.com:80param?=&valid?param&=valid")); //false
+	   System.out.println(urlVal.isValid("http://www.google.com:80?&=+?&")); //false
+	   System.out.println(urlVal.isValid("http://www.facebook.com/..")); //false
+	   System.out.println(urlVal.isValid("http://www.facebook.com/..//test")); //false
+	   System.out.println(urlVal.isValid("http://www.facebook.com/../test")); //false
+	   System.out.println(urlVal.isValid("http://www.amazon.com:-1")); //false
+	   System.out.println("\n");
    }
    
    //Two options:
@@ -103,8 +132,19 @@ public class UrlValidatorTest extends TestCase {
     * @param testObjects Used to create a url.
     */
    //Need to add more values here
-   ResultPair[] testUrlScheme = {new ResultPair("http://", true)};
-   ResultPair[] testUrlAuthority = {new ResultPair("www.google.com", true)};
+   ResultPair[] testUrlScheme = {new ResultPair("http://", true),
+		   new ResultPair("https://", true),
+		   new ResultPair("ftp://", true),
+		   new ResultPair("http:/", false),
+		   new ResultPair("http//", false)};
+   ResultPair[] testUrlAuthority = {new ResultPair("www.google.com", true),
+		   new ResultPair("www..google.com", false),
+		   new ResultPair("www.amazon.com", true),
+		   new ResultPair("www.facebook.com", true),
+		   new ResultPair("ww.google.com", false),
+		   new ResultPair("www.google.c", false),
+		   new ResultPair("www.google..com", false),
+		   new ResultPair("www/google.com", false)};
    ResultPair[] testUrlPort = {new ResultPair(":80", true)};
    ResultPair[] testPath = {new ResultPair("/test1", true)};
    ResultPair[] testUrlQuery = {new ResultPair("?action=view", true)};
