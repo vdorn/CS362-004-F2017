@@ -17,7 +17,7 @@
 
 
 import junit.framework.TestCase;
-
+import java.util.Random;
 
 
 
@@ -115,16 +115,53 @@ public class UrlValidatorTest extends TestCase {
    //2. Randomly choose 10000 combinations of URL parts from our arrays
    public void testIsValid(Object[] testObjects)
    {
-	   for(int i = 0;i<10000;i++)
+	   Random rand = new Random();
+	   final int SCHEME_INDEX= 0;
+	   final int AUTH_INDEX = 1;
+	   final int PORT_INDEX = 2;
+	   final int PATH_INDEX = 3;
+	   final int QUERY_INDEX = 4;
+	   
+	  ResultPair[] schemes = (ResultPair[]) testObjects[SCHEME_INDEX];
+	  ResultPair[] authorities = (ResultPair[]) testObjects[AUTH_INDEX];
+	  ResultPair[] ports = (ResultPair[]) testObjects[PORT_INDEX];
+	  ResultPair[] paths = (ResultPair[]) testObjects[PATH_INDEX];
+	  ResultPair[] queries = (ResultPair[]) testObjects[QUERY_INDEX];
+
+	   UrlValidator urlVal = new UrlValidator(null, null, UrlValidator.ALLOW_ALL_SCHEMES);
+
+	   
+	   for(int i = 0; i < 10000; i++)
 	   {
-		   
-	   }
+	 	  ResultPair scheme = schemes[rand.nextInt(schemes.length)];
+	 	  ResultPair auth = authorities[rand.nextInt(authorities.length)];
+	 	  ResultPair port = ports[rand.nextInt(ports.length)];
+	 	  ResultPair path = paths[rand.nextInt(paths.length)];
+	 	  ResultPair query = queries[rand.nextInt(queries.length)];
+
+	 	  boolean valid = scheme.valid && auth.valid && port.valid && path.valid && query.valid;
+	 	  String url = scheme.item + auth.item + port.item + path.item + query.item;
+	 	  if(urlVal.isValid(url) != valid)
+	 	  {
+		 	  System.out.println("\"" + url + "\"");
+		 	  System.out.println("Result:" + urlVal.isValid(url) + " Expected:" + valid);
+		 	  System.out.println("ResultPairs input:");
+		 	  System.out.println("   \"" + scheme.item + "\", " + scheme.valid);
+		 	  System.out.println("   \"" + auth.item + "\", " + auth.valid);
+		 	  System.out.println("   \"" + port.item + "\", " + port.valid);
+		 	  System.out.println("   \"" + path.item + "\", " + path.valid);
+		 	  System.out.println("   \"" + query.item + "\", " + query.valid);
+		 	  System.out.println("\n");
+	 		  
+	 	  }
+	 	  //assert(urlVal.isValid(url) ==  valid);
+	   }   
    }
    
    public void testAnyOtherUnitTest()
    {
 	   
-   }
+   
    /**
     * Create set of tests by taking the testUrlXXX arrays and
     * running through all possible permutations of their combinations.
@@ -152,5 +189,9 @@ public class UrlValidatorTest extends TestCase {
    //what we will pass to testIsValid
    Object[] testUrlParts = {testUrlScheme, testUrlAuthority, testUrlPort, testPath, testUrlQuery};
    int[] testPartsIndex = {0, 0, 0, 0, 0};
+   
+   System.out.println("Starting testAnyOtherUnitTest... ");
 
+   testIsValid(testUrlParts);
+}
 }
