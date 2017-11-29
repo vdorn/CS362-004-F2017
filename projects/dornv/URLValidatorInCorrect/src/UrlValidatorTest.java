@@ -182,7 +182,9 @@ public class UrlValidatorTest extends TestCase {
 		   new ResultPair("ww.google.com", false),
 		   new ResultPair("www.google.c", false),
 		   new ResultPair("www.google..com", false),
-		   new ResultPair("www/google.com", false)};
+		   new ResultPair("www/google.com", false),
+		   new ResultPair("255.255.255.256", false),
+		   new ResultPair("255.255.255.255", true)};
    ResultPair[] testUrlPort = {new ResultPair(":80", true),
 		   new ResultPair(":80a", false),
 		   new ResultPair("", true),
@@ -210,5 +212,5 @@ public class UrlValidatorTest extends TestCase {
    System.out.println("Starting testAnyOtherUnitTest... ");
 
    testIsValid(testUrlParts);
-}
+   }
 }
