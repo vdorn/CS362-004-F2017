@@ -35,7 +35,8 @@ public class UrlValidatorTest extends TestCase {
    }
 
    
-   
+   //Manual testing
+   //Manually created URLs based on some values our team thought were boundary values
    public void testManualTest()
    {
 	   System.out.println("Starting Manual Testing:\n");
@@ -100,12 +101,10 @@ public class UrlValidatorTest extends TestCase {
 	   System.out.println("\n");
    } 
    
-   //Partition based on URLs that are just one off being correct and their correct count part?
-   //EX: http:/www.amazon.com and http://www.amazon.com
-   //Partition method completed with each of the 5 URL parts
-   //This could test some sort of boundary values
-   //We could also test URLs with one of the 5 URL parts being incorrect
-   //EX: http://www..amazon.com and http://www.amazon.com:65a
+   //Partition testing
+   //The two partitions we chose to test were URLs that were valid and URLs that were invalid
+   //Each partition contains values we deem to be boundary values and values we deem to be "normal" values
+   //for the given URL part
    
    //valid partitions
    public void testYourFirstPartition()
@@ -170,9 +169,9 @@ public class UrlValidatorTest extends TestCase {
 	   System.out.println("\n");
    }
    
-   //Two options:
-   //1. Go through every combination of URL parts that we add to  the results pair arrays
-   //2. Randomly choose 10000 combinations of URL parts from our arrays
+   //Programmed Test
+   //Randomly choose 10000 combinations of URL parts from our test object arrays
+   //Values in the arrays were chosen based on boundary and non-boundary values
    public void testIsValid(Object[] testObjects)
    {
 	   Random rand = new Random();
@@ -274,6 +273,8 @@ public class UrlValidatorTest extends TestCase {
    testIsValid(testUrlParts);
    }
    
+   //assert function
+   //used to print out URL validation errors detected in the URL Validator function
    public void assertTestCase(boolean actual, boolean expected) {
 	   
 	   String results ="Actual: " + actual + "; Expected: " + expected + ";";
